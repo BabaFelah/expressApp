@@ -23,10 +23,24 @@ exports.submit_lead = function(req, res, next) {
 };
 
 exports.show_leads = function(req, res, next) {
-  return pool.query("select email from leads", (error, leads) => {
+  return pool.query("select * from leads", (error, results) => {
     if (error) {
       throw error;
     }
-    res.render("index", { title: "Express", leads: leads.rows });
+    res.render("index", { title: "Express", leads: results.rows });
   });
+};
+
+exports.show_lead = function(req, res, next) {
+  const id = req.params.leadId;
+  return pool.query(
+    "select email from leads where id = $1",
+    [id],
+    (error, results) => {
+      if (error) {
+        throw error;
+      }
+      res.render("lead", { lead: results.rows[0].email });
+    }
+  );
 };

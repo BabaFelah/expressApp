@@ -6,5 +6,6 @@ var landing = require("../controllers/index");
 router.get("/", landing.index);
 router.post("/", landing.submit_lead);
 router.get("/leads", landing.show_leads);
+router.get("/lead/:leadId", landing.show_lead);
 
 module.exports = router;
