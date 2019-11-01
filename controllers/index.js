@@ -71,3 +71,17 @@ exports.edit_lead = function(req, res, next) {
     }
   );
 };
+
+exports.delete_lead = function(req, res, next) {
+  const id = req.params.leadId;
+  return pool.query(
+    "delete from leads where id = $1",
+    [id],
+    (error, results) => {
+      if (error) {
+        throw error;
+      }
+      res.redirect("/leads");
+    }
+  );
+};
