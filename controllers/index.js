@@ -7,8 +7,6 @@ exports.index = function(req, res, next) {
 };
 
 exports.submit_lead = function(req, res, next) {
-  console.log("Lead email: ", req.body.lead_email);
-
   const email = req.body.lead_email;
   return pool.query(
     "insert into leads(createdat, email) values(now(), $1)",
@@ -34,13 +32,42 @@ exports.show_leads = function(req, res, next) {
 exports.show_lead = function(req, res, next) {
   const id = req.params.leadId;
   return pool.query(
-    "select email from leads where id = $1",
+    "select * from leads where id = $1",
     [id],
     (error, results) => {
       if (error) {
         throw error;
       }
-      res.render("lead", { lead: results.rows[0].email });
+      res.render("lead", { lead: results.rows[0] });
+    }
+  );
+};
+
+exports.show_edit_lead = function(req, res, next) {
+  const id = req.params.leadId;
+  return pool.query(
+    "select * from leads where id = $1",
+    [id],
+    (error, results) => {
+      if (error) {
+        throw error;
+      }
+      res.render("lead/edit_lead", { lead: results.rows[0] });
+    }
+  );
+};
+
+exports.edit_lead = function(req, res, next) {
+  const email = req.body.lead_email;
+  const id = req.params.leadId;
+  return pool.query(
+    "update leads set email = $1 where id = $2",
+    [email, id],
+    (error, results) => {
+      if (error) {
+        throw error;
+      }
+      res.redirect("/lead/" + req.params.leadId);
     }
   );
 };
